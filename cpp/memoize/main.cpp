@@ -41,12 +41,11 @@ int succ_mem(int i)
 //}
 
 // memoize_func : caches results per function per inputs
-// currently requires explicit typing
-template <class F, class R, class ...Args>
-R memoize_func(F f, Args... args)
+template <class F, class ...Args>
+auto memoize_func(F f, Args... args)
 {
     std::tuple<Args...> myTuple(args...);
-    static std::map<std::tuple<Args...>, R> results;
+    static std::map<std::tuple<Args...>, decltype(f(args...))> results;
     if (results.find(myTuple) != results.end())
     {
         return results[myTuple];
@@ -58,13 +57,17 @@ R memoize_func(F f, Args... args)
 
 int main(int argc, char *argv[])
 {
-    std::cout << memoize_func<decltype(sum), int, int>(sum, 1,2) << std::endl;
-    std::cout << memoize_func<decltype(sum), int, int>(sum, 1,2) << std::endl;
-    std::cout << 1 << " -> " << memoize_func<decltype(succ),int,int>(succ,1) << std::endl;
-    std::cout << 1 << " -> " << memoize_func<decltype(succ),int,int>(succ,1) << std::endl;
-    std::cout << 1 << " -> " << memoize_func<decltype(succDouble),double, int>(succDouble,1) << std::endl;
+    std::cout << memoize_func(sum, 1,2) << std::endl;
+    std::cout << memoize_func(sum, 1,2) << std::endl;
+    std::cout << memoize_func(sum, 1,2) << std::endl;
+    std::cout << memoize_func(sum, 1,3) << std::endl;
+    std::cout << memoize_func(sum, 1,3) << std::endl;
+    std::cout << memoize_func(sum, 1,3) << std::endl;
 
-    //memoise_func(succ,1);
+    std::cout << memoize_func(succ,1) <<std::endl;
+    std::cout << memoize_func(succ,1) <<std::endl;
+    std::cout << memoize_func(succ,1) <<std::endl;
+
     return 0;
 }
 
