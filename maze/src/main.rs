@@ -2,6 +2,6 @@ mod maze;
 use maze::*;
 
 fn main() {
-    let m = Maze::new(20, 10);
+    let m = Maze::new(80, 20);
     m.print();
 }
