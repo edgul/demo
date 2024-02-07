@@ -1,0 +1,14 @@
+[package]
+name = "hello-ffi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+# this project uses dynamic linking to a separately compiled c library
+# cc -c src/myc.c
+# cc -shared myc.o libmyc.so
+# sudo cp libmyc.so /usr/local/lib
+# sudo ldconfig 
+
+
