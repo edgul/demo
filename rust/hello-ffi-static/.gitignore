@@ -1,0 +1,4 @@
+/target
+myc.o
+libmyc.so
+main
