@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -103,6 +105,12 @@ enum Command {
     Retrieve,
 }
 
+impl fmt::Display for Command {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
 #[derive(Debug, PartialEq, Eq)]
 enum Error {
     TrailingData,
@@ -114,13 +122,7 @@ enum Error {
 }
 
 pub fn parse(input: &str) -> Result<Command, Error> {
-    let split = input.split_once('\n');
-   
-    if split.is_none() {
-        return Err(Error::IncompleteMessage);
-    }
-
-    if let Some((line1, line2)) = split {
+    if let Some((line1, line2)) = input.split_once('\n') {
         if line1.is_empty() {
             return Err(Error::EmptyMessage)
         }
@@ -128,32 +130,16 @@ pub fn parse(input: &str) -> Result<Command, Error> {
             return Err(Error::TrailingData);
         }
 
-        let mut splitn = line1.splitn(9 as usize, ' ');
+        let mut splitn = line1.splitn(2, ' ');
         let command = splitn.next();
-        match command.unwrap() {
-            "RETRIEVE" => {
-                if let Some(_) = splitn.next() {
-                    return Err(Error::UnexpectedPayload);
-                } 
-                return Ok(Command::Retrieve);
-            },
-            "PUBLISH" => {
-                let mut payload = Vec::new();
-                while let Some(x) = splitn.next() {
-                    payload.push(x);
-                }
-                if payload.is_empty() {
-                    return Err(Error::MissingPayload);
-                }
-                return Ok(Command::Publish(payload.join(" ")));
-            },
-            "" => {
-                return Err(Error::MissingPayload); 
-            }
-            _ => {
-                return Err(Error::UnknownCommand); 
-            }
+        let payload = splitn.next();
+        match (command.unwrap(), payload) {
+            ("RETRIEVE", Some(_)) => return Err(Error::UnexpectedPayload),
+            ("RETRIEVE", None)    => return Ok(Command::Retrieve),
+            ("PUBLISH", None)     => return Err(Error::MissingPayload),
+            ("PUBLISH", Some(p))  => return Ok(Command::Publish(p.to_string())),
+            _                     => return Err(Error::UnknownCommand),
         };
     }
-    Err(Error::UnknownCommand)
+    Err(Error::IncompleteMessage)
 }
