@@ -1,4 +1,41 @@
-use std::fmt;
+#[derive(Debug, PartialEq, Eq)]
+pub enum Command {
+    Publish(String),
+    Retrieve,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum Error {
+    TrailingData,
+    IncompleteMessage,
+    EmptyMessage, 
+    UnknownCommand,
+    UnexpectedPayload,
+    MissingPayload,
+}
+
+pub fn parse(input: &str) -> Result<Command, Error> {
+    if let Some((line1, line2)) = input.split_once('\n') {
+        if line1.is_empty() {
+            return Err(Error::EmptyMessage)
+        }
+        if !line2.is_empty() {
+            return Err(Error::TrailingData);
+        }
+
+        let mut splitn = line1.splitn(2, ' ');
+        let command = splitn.next();
+        let payload = splitn.next();
+        match (command.unwrap(), payload) {
+            ("RETRIEVE", Some(_)) => return Err(Error::UnexpectedPayload),
+            ("RETRIEVE", None)    => return Ok(Command::Retrieve),
+            ("PUBLISH", None)     => return Err(Error::MissingPayload),
+            ("PUBLISH", Some(p))  => return Ok(Command::Publish(p.to_string())),
+            _                     => return Err(Error::UnknownCommand),
+        };
+    }
+    Err(Error::IncompleteMessage)
+}
 
 #[cfg(test)]
 mod tests {
@@ -99,47 +136,3 @@ mod tests {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
-enum Command {
-    Publish(String),
-    Retrieve,
-}
-
-impl fmt::Display for Command {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
-
-#[derive(Debug, PartialEq, Eq)]
-enum Error {
-    TrailingData,
-    IncompleteMessage,
-    EmptyMessage, 
-    UnknownCommand,
-    UnexpectedPayload,
-    MissingPayload,
-}
-
-pub fn parse(input: &str) -> Result<Command, Error> {
-    if let Some((line1, line2)) = input.split_once('\n') {
-        if line1.is_empty() {
-            return Err(Error::EmptyMessage)
-        }
-        if !line2.is_empty() {
-            return Err(Error::TrailingData);
-        }
-
-        let mut splitn = line1.splitn(2, ' ');
-        let command = splitn.next();
-        let payload = splitn.next();
-        match (command.unwrap(), payload) {
-            ("RETRIEVE", Some(_)) => return Err(Error::UnexpectedPayload),
-            ("RETRIEVE", None)    => return Ok(Command::Retrieve),
-            ("PUBLISH", None)     => return Err(Error::MissingPayload),
-            ("PUBLISH", Some(p))  => return Ok(Command::Publish(p.to_string())),
-            _                     => return Err(Error::UnknownCommand),
-        };
-    }
-    Err(Error::IncompleteMessage)
-}
