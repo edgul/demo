@@ -41,11 +41,11 @@ async fn main() -> std::io::Result<()> {
 
     loop {
         match listener.accept().await {
-            Ok((socket, addr)) => {
+            Ok((stream, addr)) => {
                 println!("new client: {:?}", addr);
                 let deque_arc = deque.clone();
                 tokio::spawn(async move {
-                    handle_client(socket, deque_arc).await.unwrap();
+                    handle_client(stream, deque_arc).await.unwrap();
                 });
             }
             Err(e) => {
