@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 
@@ -11,23 +12,22 @@ async fn handle_client(
     stream.read_to_string(&mut s).await?;
 
     let parsed = simple_db::parse(&s);
-    let response;
-    match parsed {
+    let response = match parsed {
         Ok(simple_db::Command::Publish(s)) => {
-            data.lock().unwrap().push_back(s);
-            response = "OK\n".to_string();
+            data.lock().await.push_back(s);
+            "OK\n".to_string()
         }
         Ok(simple_db::Command::Retrieve) => {
-            if let Some(r) = data.lock().unwrap().pop_front() {
-                response = format!("{r}\n");
+            if let Some(r) = data.lock().await.pop_front() {
+                format!("{r}\n")
             } else {
-                response = "Nothing has been published\n".to_string();
+                "Nothing has been published\n".to_string()
             }
         }
         _ => {
-            response = format!("{:?}\n", parsed);
+            format!("{:?}\n", parsed)
         }
-    }
+    };
     stream.write_all(response.as_bytes()).await?;
     Ok(())
 }
@@ -38,7 +38,6 @@ async fn main() -> std::io::Result<()> {
     println!("Listening");
 
     let deque = Arc::new(Mutex::new(VecDeque::new()));
-
     loop {
         match listener.accept().await {
             Ok((stream, addr)) => {
