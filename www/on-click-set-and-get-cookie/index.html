@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title></title>
+</head>
+<body id="het">
+    <noscript>Sorry, we need js to run correctly!</noscript>
+    <div id="root">
+        <button onclick="getCookie()">Get cookie</button>
+        <br>
+        <button onclick="setCookie()">Set cookie</button>
+    </div>
+</body>
+<script>
+    function getCookie(cookieName) {
+        console.log('Get cookie',);
+        const strCookie = document.cookie
+        const cookieList = strCookie.split(';')
+        console.log("cookieList: " + JSON.stringify(cookieList))
+        for (let i = 0; i < cookieList.length; i++) {
+            const arr = cookieList[i].split('=')
+            if ("userInfo" === arr[0].trim()) {
+                console.log('cookie is:', arr[1]);
+                return;
+            }
+            console.log('no cookie');
+        }
+        return ''
+    }
+    function setCookie(params) {
+        console.log('Set cookie',);
+        const exdate = new Date()
+        exdate.setTime(exdate.getTime() + 30 * 1000)
+        document.cookie = `${'userInfo'}=test${`;expires=${exdate.toGMTString()}`}`
+    }
+
+</script>
+</html>

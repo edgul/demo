@@ -1,6 +1,7 @@
 
 # Demo
 
-A repo for small code fragments that demonstrate various:
-* language features
-* implementations of common algorithms/data structures 
+A general playground for small code fragments that:
+* demonstrate language features
+* implement common algorithms/data structures 
+* test simple website functionality

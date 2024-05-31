@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <script>
+     function test() {
+       var r = new XMLHttpRequest();
+
+       r.onreadystatechange = function() {
+         document.querySelector("#log").textContent = r.readyState;
+       };
+
+       r.open("DELETE", "/thing");
+       r.send();
+     }
+    </script>
+  </head>
+  <body>
+    <a onclick="test();">CLICK IT</a>
+    <div id="log"></div>
+  </body>
+</html>
