@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="frame-src http://example.com;">
+
+  <title>Redir Test</title>
+
+  <link rel="preload" href="https://example.com/notfound.html" as="fetch" id="nf-preload"
+    onload="console.log('inline onload');"
+    onerror="console.log('inline onerror');"
+  >
+
+  <script>
+    const np = document.getElementById("nf-preload");
+    np.addEventListener('load', (evt) => { console.log("load listener", evt) });
+    np.addEventListener('error', (evt) => { console.log("error listener", evt) });
+  </script>
+</head>
+
+<body>
+
+</body>

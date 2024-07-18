@@ -5,7 +5,7 @@ $options = array(
 'httponly' => true,
 'samesite' => 'Strict'
 );
-// $options['samesite']='Lax';
+$options['samesite']='Lax';
 session_set_cookie_params($options);
 session_start();
 session_write_close();
