@@ -12,7 +12,7 @@ setcookie("nopath", "val", [
     'path' => '/',
     'secure' => true,  // Change to true if you want the cookie to be sent only over secure HTTPS connections
     'httponly' => true, // HttpOnly attribute
-    'samesite' => 'None' // Optional, for additional security
+    'samesite' => 'Lax' // Optional, for additional security
 ]);
 ?>
 
