@@ -1,0 +1,10 @@
+[package]
+name = "dynlib"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "dynlib"
+crate-type = ["cdylib"]  # or ["staticlib"]
+
+[dependencies]
