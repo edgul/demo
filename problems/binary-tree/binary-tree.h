@@ -9,7 +9,7 @@
 class Node {
 public:
   int value;
-  Node* left;
+  Node* left; // todo: make this safer by getting rid of raw pointers?
   Node* right;
   Node(int val) : value(val) {}
   Node(int val, Node* left, Node* right) : value(val), left(left), right(right) {}
@@ -17,6 +17,7 @@ public:
 
 bool diffGreaterThanOne(int lhs, int rhs) { return std::abs(lhs-rhs) > 1;}
 
+// todo: this feels really clunky, is there a better way?
 struct MaxAndMin {
   int max;
   int min;
@@ -57,6 +58,7 @@ bool isBalancedTree(Node* root) {
 std::string serialize(Node* node) {
   if (!node) { return ""; }
   std::string result = std::to_string(node->value) + "{";
+  // todo: maybe some perf concerns around appending strings?
   result.append(serialize(node->left));
   result.append(",");
   result.append(serialize(node->right));
@@ -90,7 +92,7 @@ Node* deserialize(std::string& string, size_t& index) {
         node->left = nullptr;
         node->right = nullptr;
       } else if (c == '\n' || c == ',' || c == '}'){
-        // missing {}, we support that!
+        // missing {} means we can cut out early
         node = new Node(std::stoi(digits));
         node->left = nullptr;
         node->right = nullptr;
@@ -126,7 +128,7 @@ Node* deserialize(std::string& string, size_t& index) {
       break; // we are done in this recursion
     }
   }
-  // single number edge case:
+  // single number (no braces) edge case:
   // if we fell off the array with some unused digits
   if (m == VALUE && !digits.empty()) {
     node = new Node(std::stoi(digits));
@@ -136,6 +138,7 @@ Node* deserialize(std::string& string, size_t& index) {
   return node;
 }
 
+// todo: more stuff with trees themselves
 // bool isBinarySearchTree(Node* root) { }
 
 void testBalanced() {

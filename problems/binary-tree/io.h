@@ -43,6 +43,7 @@ std::string readFromFile(std::string& filename) {
   return result;
 }
 
+// todo: migrate these tests to the new format (tree3.txt)
 void testReadFromTrees() {
   std::string filename = std::string("test-data/tree.txt");
   std::string s = readFromFile(filename);
