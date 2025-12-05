@@ -89,6 +89,12 @@ Node* deserialize(std::string& string, size_t& index) {
         node = new Node(std::stoi(digits));
         node->left = nullptr;
         node->right = nullptr;
+      } else if (c == '\n' || c == ',' || c == '}'){
+        // missing {}, we support that!
+        node = new Node(std::stoi(digits));
+        node->left = nullptr;
+        node->right = nullptr;
+        break;
       } else {
         assert(false && "unexpected char while looking for value");
       }
@@ -99,6 +105,9 @@ Node* deserialize(std::string& string, size_t& index) {
       } else if (c == ',') {
         index++;
         m = RIGHT;  
+      } else if (c == '}') { // no comma implies no children, lets cut out early
+        index++;
+        break;
       } else {
         assert(false && "unexpected char while looking for left");
       }
@@ -116,6 +125,13 @@ Node* deserialize(std::string& string, size_t& index) {
       }
       break; // we are done in this recursion
     }
+  }
+  // single number edge case:
+  // if we fell off the array with some unused digits
+  if (m == VALUE && !digits.empty()) {
+    node = new Node(std::stoi(digits));
+    node->left = nullptr;
+    node->right = nullptr;
   }
   return node;
 }
