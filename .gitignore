@@ -3,3 +3,4 @@ Cargo.lock
 target/
 build/
 .cache
+compile_commands.json
